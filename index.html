@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bio-Metric OS · Training Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="Iron.css" />
+</head>
+<body>
+
+  <!-- BOOT OVERLAY -->
+  <div id="boot-overlay" class="boot-overlay" aria-hidden="true">
+    <div class="boot-inner">
+      <div class="boot-logo">BIO-METRIC <span>OS</span></div>
+      <div class="boot-lines" id="boot-lines"></div>
+      <div class="boot-bar-wrap">
+        <div class="boot-bar" id="boot-bar"></div>
+      </div>
+      <div class="boot-pct" id="boot-pct">0%</div>
+    </div>
+  </div>
+
+  <!-- REST TIMER OVERLAY -->
+  <div id="rest-overlay" class="rest-overlay" aria-hidden="true">
+    <div class="rest-inner">
+      <div class="rest-label">REST TIMER</div>
+      <canvas id="rest-ring" width="160" height="160"></canvas>
+      <div class="rest-countdown" id="rest-countdown">0:00</div>
+      <div class="rest-msg" id="rest-msg">Recovering…</div>
+      <button class="rest-skip" id="rest-skip">SKIP REST</button>
+    </div>
+  </div>
+
+  <!-- SCANLINE EFFECT -->
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="bm-header">
+    <div class="bm-logo">BIO-METRIC <span>OS</span></div>
+
+    <div class="bm-header-center">
+      <canvas id="pulse-canvas" width="200" height="40" aria-label="Biometric pulse monitor"></canvas>
+    </div>
+
+    <div class="bm-header-right">
+      <div class="bm-clock" id="bm-clock">00:00:00</div>
+      <div class="bm-status">
+        <div class="bm-dot"></div>
+        <span id="sys-status">SYSTEM READY</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTROLS -->
+  <div class="bm-controls">
+    <div class="bm-select-wrap">
+      <div class="ctrl-label">PROTOCOL</div>
+      <!-- Hidden native select kept for value/accessibility -->
+      <select class="bm-select bm-select--hidden" id="proto-sel" aria-hidden="true" tabindex="-1">
+        <option value="">— SELECT PROTOCOL —</option>
+        <option value="bodybuilder">HYPERTROPHY / BODYBUILDER</option>
+        <option value="powerlifter">CNS INTENSITY / POWERLIFTER</option>
+        <option value="calisthenics">NEUROMUSCULAR / CALISTHENICS</option>
+      </select>
+
+      <!-- Custom dropdown trigger -->
+      <div class="proto-dropdown" id="proto-dropdown" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select training protocol" tabindex="0">
+        <div class="proto-dropdown-selected">
+          <div class="proto-dropdown-icon" id="proto-dd-icon">◈</div>
+          <div class="proto-dropdown-text">
+            <span class="proto-dd-label" id="proto-dd-label">— SELECT PROTOCOL —</span>
+            <span class="proto-dd-sub" id="proto-dd-sub"></span>
+          </div>
+          <div class="proto-dropdown-chevron" id="proto-dd-chevron">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <!-- Dropdown panel -->
+        <div class="proto-dropdown-panel" id="proto-dropdown-panel" role="listbox" aria-label="Protocol options">
+
+          <div class="proto-dd-option" role="option" data-value="bodybuilder" data-label="HYPERTROPHY / BODYBUILDER" data-sub="High-Volume Metabolic Stress" data-icon="⬡" data-diff="Advanced" data-dur="68min" data-sets="20 sets" tabindex="0">
+            <div class="proto-opt-left">
+              <div class="proto-opt-icon">⬡</div>
+              <div class="proto-opt-text">
+                <div class="proto-opt-name">HYPERTROPHY</div>
+                <div class="proto-opt-sub">High-Volume Metabolic Stress</div>
+              </div>
+            </div>
+            <div class="proto-opt-right">
+              <div class="proto-opt-tag proto-opt-tag--green">68 MIN</div>
+              <div class="proto-opt-bars" data-level="4">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proto-dd-option" role="option" data-value="powerlifter" data-label="CNS INTENSITY / POWERLIFTER" data-sub="Maximum Motor Unit Recruitment" data-icon="◆" data-diff="Elite" data-dur="85min" data-sets="18 sets" tabindex="0">
+            <div class="proto-opt-left">
+              <div class="proto-opt-icon proto-opt-icon--red">◆</div>
+              <div class="proto-opt-text">
+                <div class="proto-opt-name">CNS INTENSITY</div>
+                <div class="proto-opt-sub">Maximum Motor Unit Recruitment</div>
+              </div>
+            </div>
+            <div class="proto-opt-right">
+              <div class="proto-opt-tag proto-opt-tag--red">85 MIN</div>
+              <div class="proto-opt-bars" data-level="5">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proto-dd-option" role="option" data-value="calisthenics" data-label="NEUROMUSCULAR / CALISTHENICS" data-sub="Proprioceptive Mastery" data-icon="◉" data-diff="Advanced" data-dur="55min" data-sets="23 sets" tabindex="0">
+            <div class="proto-opt-left">
+              <div class="proto-opt-icon proto-opt-icon--purple">◉</div>
+              <div class="proto-opt-text">
+                <div class="proto-opt-name">NEUROMUSCULAR</div>
+                <div class="proto-opt-sub">Proprioceptive Mastery</div>
+              </div>
+            </div>
+            <div class="proto-opt-right">
+              <div class="proto-opt-tag proto-opt-tag--purple">55 MIN</div>
+              <div class="proto-opt-bars proto-opt-bars--purple" data-level="4">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <button class="bm-profile-btn" id="profile-btn" aria-label="Open biometric profile">
+      <span class="profile-btn-icon">◎</span>
+      <div class="profile-btn-text">
+        <span class="profile-btn-label" id="profile-btn-label">BIO PROFILE</span>
+        <span class="profile-btn-sub" id="profile-btn-sub">Enter metrics →</span>
+      </div>
+      <div class="profile-btn-dot"></div>
+    </button>
+    <input type="hidden" id="wt-input" value="0" />
+
+
+
+    <div class="bm-meta-pills" id="bm-meta-pills">
+      <div class="meta-pill" id="pill-duration"><span class="pill-icon">⏱</span><span id="pill-dur-val">—</span></div>
+      <div class="meta-pill" id="pill-diff"><span class="pill-icon">⚡</span><span id="pill-diff-val">—</span></div>
+      <div class="meta-pill" id="pill-sets-total"><span class="pill-icon">◆</span><span id="pill-sets-val">—</span></div>
+    </div>
+
+    <button class="bm-export-btn" id="export-btn" disabled aria-label="Export session data">
+      EXPORT SESSION
+    </button>
+
+    <button class="bm-history-btn" id="history-btn" aria-label="Workout history">
+      <span class="hist-btn-icon">◈</span> HISTORY
+    </button>
+    
+    <button class="bm-theme-btn" id="theme-toggle-btn" aria-label="Toggle theme">○ LIGHT</button>
+    
+    <button class="bm-reset-btn" id="reset-btn">RESET SYSTEM</button>
+    
+  </div>
+
+
+  <!-- BIO-METRIC PROFILE MODAL -->
+  <div id="bio-profile-backdrop" class="bio-profile-backdrop" aria-hidden="true">
+    <div class="bio-profile-modal" id="bio-profile-modal" role="dialog" aria-label="Biometric Profile Analysis">
+
+      <!-- MODAL HEADER -->
+      <div class="bpm-header">
+        <div class="bpm-header-left">
+          <div class="bpm-header-icon">◎</div>
+          <div>
+            <div class="bpm-title">BIO-METRIC PROFILE</div>
+            <div class="bpm-subtitle">DIAGNOSTIC INTELLIGENCE ENGINE</div>
+          </div>
+        </div>
+        <button class="bpm-close" id="bpm-close" aria-label="Close">✕</button>
+      </div>
+
+      <!-- TWO COLUMN LAYOUT -->
+      <div class="bpm-body">
+
+        <!-- LEFT: INPUT PANEL -->
+        <div class="bpm-inputs">
+          <div class="bpm-section-label">ANTHROPOMETRIC DATA</div>
+
+          <div class="bpm-field-grid">
+            <div class="bpm-field">
+              <label class="bpm-field-label">HEIGHT (CM)</label>
+              <input class="bpm-field-input" type="number" id="bio-height" placeholder="175" min="100" max="250" step="1" />
+            </div>
+            <div class="bpm-field">
+              <label class="bpm-field-label">WEIGHT (KG)</label>
+              <input class="bpm-field-input" type="number" id="bio-weight" placeholder="75" min="30" max="300" step="0.5" />
+            </div>
+            <div class="bpm-field">
+              <label class="bpm-field-label">AGE (YRS)</label>
+              <input class="bpm-field-input" type="number" id="bio-age" placeholder="25" min="14" max="90" step="1" />
+            </div>
+            <div class="bpm-field">
+              <label class="bpm-field-label">GENDER</label>
+              <div class="bpm-toggle-group" id="bio-gender">
+                <button class="bpm-toggle active" data-val="male">MALE</button>
+                <button class="bpm-toggle" data-val="female">FEMALE</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bpm-section-label" style="margin-top:18px">ACTIVITY & GOAL</div>
+
+          <div class="bpm-field">
+            <label class="bpm-field-label">ACTIVITY LEVEL</label>
+            <div class="bpm-activity-group" id="bio-activity">
+              <button class="bpm-act-btn" data-val="1.2" data-tip="Little or no exercise">SEDENTARY</button>
+              <button class="bpm-act-btn active" data-val="1.375" data-tip="1–3 days/week">LIGHT</button>
+              <button class="bpm-act-btn" data-val="1.55" data-tip="3–5 days/week">MODERATE</button>
+              <button class="bpm-act-btn" data-val="1.725" data-tip="6–7 days/week">ACTIVE</button>
+              <button class="bpm-act-btn" data-val="1.9" data-tip="Twice daily training">ATHLETE</button>
+            </div>
+          </div>
+
+          <div class="bpm-field" style="margin-top:14px">
+            <label class="bpm-field-label">PRIMARY GOAL</label>
+            <div class="bpm-goal-group" id="bio-goal">
+              <button class="bpm-goal-btn" data-val="cut" data-cal="-500">
+                <span class="goal-icon">↓</span>
+                <span class="goal-name">CUT</span>
+                <span class="goal-desc">Fat Loss</span>
+              </button>
+              <button class="bpm-goal-btn active" data-val="maintain" data-cal="0">
+                <span class="goal-icon">◈</span>
+                <span class="goal-name">MAINTAIN</span>
+                <span class="goal-desc">Recomp</span>
+              </button>
+              <button class="bpm-goal-btn" data-val="bulk" data-cal="+300">
+                <span class="goal-icon">↑</span>
+                <span class="goal-name">BULK</span>
+                <span class="goal-desc">Muscle Gain</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bpm-field" style="margin-top:14px">
+            <label class="bpm-field-label">TRAINING LOAD (KG) — used for volume calc</label>
+            <div class="bpm-load-wrap">
+              <input class="bpm-field-input" type="number" id="bio-load" placeholder="60" min="0" max="500" step="2.5" />
+              <span class="bpm-load-unit">KG</span>
+            </div>
+          </div>
+
+          <button class="bpm-analyze-btn" id="bpm-analyze">
+            <span>RUN DIAGNOSTIC</span>
+            <span class="bpm-btn-arrow">→</span>
+          </button>
+        </div>
+
+        <!-- RIGHT: RESULTS PANEL -->
+        <div class="bpm-results" id="bpm-results">
+          <div class="bpm-results-empty" id="bpm-empty">
+            <div class="bpm-empty-icon">◎</div>
+            <div class="bpm-empty-txt">Enter your metrics and run diagnostic to generate your personalized report</div>
+          </div>
+
+          <!-- Results (hidden until analyzed) -->
+          <div class="bpm-results-content" id="bpm-content" style="display:none">
+
+            <!-- METRICS ROW -->
+            <div class="bpm-metrics-row" id="bpm-metrics-row"></div>
+
+            <!-- BMI STATUS -->
+            <div class="bpm-card" id="bpm-bmi-card"></div>
+
+            <!-- NUTRITION -->
+            <div class="bpm-card" id="bpm-nutrition-card"></div>
+
+            <!-- PROTEIN TIMELINE -->
+            <div class="bpm-card" id="bpm-protein-card"></div>
+
+            <!-- WORKOUT SUITABILITY -->
+            <div class="bpm-card" id="bpm-workout-card"></div>
+
+            <!-- FOOD GUIDANCE -->
+            <div class="bpm-card" id="bpm-food-card"></div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="bm-main">
+
+    <!-- VIEWPORT -->
+    <div class="bm-viewport" id="viewport" role="main">
+      <div class="bm-init" id="init-state">
+        <div class="bm-init-icon">▶ INIT</div>
+        <div class="bm-init-txt">
+          Select a protocol above<br />to initialize diagnostic matrix
+        </div>
+        <div class="bm-init-grid" id="init-grid" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="bm-sidebar" aria-label="Training metrics">
+
+      <!-- COMPLETION RING -->
+      <div class="sidebar-section sidebar-section--ring">
+        <div class="sidebar-title">Completion</div>
+        <div class="ring-wrap">
+          <canvas id="completion-ring" width="100" height="100" aria-label="Workout completion progress"></canvas>
+          <div class="ring-pct" id="ring-pct">0%</div>
+        </div>
+      </div>
+
+      <!-- MUSCLE MAP -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Muscle Map</div>
+        <div class="svg-wrap">
+          <svg id="hmap" viewBox="0 0 80 160" xmlns="http://www.w3.org/2000/svg" aria-label="Human muscle diagram">
+            <ellipse cx="40" cy="10" rx="10" ry="9" fill="#1a2030" stroke="#2a3040" stroke-width="0.5"/>
+            <rect x="36" y="19" width="8" height="5" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <ellipse id="m-shoulders" cx="40" cy="29" rx="18" ry="6" class="muscle-grp"/>
+            <ellipse id="m-chest" cx="40" cy="38" rx="12" ry="7" class="muscle-grp"/>
+            <rect id="m-lats" x="23" y="32" width="7" height="20" rx="3" class="muscle-grp"/>
+            <rect id="m-lats-r" x="50" y="32" width="7" height="20" rx="3" class="muscle-grp"/>
+            <ellipse id="m-core" cx="40" cy="54" rx="8" ry="6" class="muscle-grp"/>
+            <rect id="m-triceps" x="17" y="34" width="5" height="16" rx="2.5" class="muscle-grp"/>
+            <rect id="m-triceps-r" x="58" y="34" width="5" height="16" rx="2.5" class="muscle-grp"/>
+            <rect id="m-biceps" x="14" y="34" width="4" height="14" rx="2" class="muscle-grp"/>
+            <rect id="m-biceps-r" x="62" y="34" width="4" height="14" rx="2" class="muscle-grp"/>
+            <rect x="15" y="50" width="4" height="14" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect x="61" y="50" width="4" height="14" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect x="30" y="62" width="20" height="5" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect id="m-lower_back" x="33" y="58" width="14" height="10" rx="3" class="muscle-grp"/>
+            <ellipse id="m-glutes" cx="40" cy="71" rx="12" ry="7" class="muscle-grp"/>
+            <rect id="m-quads" x="28" y="77" width="10" height="28" rx="5" class="muscle-grp"/>
+            <rect id="m-quads-r" x="42" y="77" width="10" height="28" rx="5" class="muscle-grp"/>
+            <rect id="m-hamstrings" x="29" y="107" width="9" height="22" rx="4" class="muscle-grp"/>
+            <rect id="m-hamstrings-r" x="42" y="107" width="9" height="22" rx="4" class="muscle-grp"/>
+            <rect x="29" y="130" width="9" height="16" rx="3" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect x="42" y="130" width="9" height="16" rx="3" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect x="28" y="146" width="11" height="10" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+            <rect x="41" y="146" width="11" height="10" rx="2" fill="#1a2030" stroke="#2a3040" stroke-width="0.3"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- SESSION STATS -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Session</div>
+        <div class="session-stats">
+          <div class="stat-row">
+            <span class="stat-key">Sets Done</span>
+            <span class="stat-val" id="stat-sets">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-key">Volume</span>
+            <span class="stat-val" id="stat-vol">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-key">Avg RPE</span>
+            <span class="stat-val" id="stat-rpe">—</span>
+          </div>
+        </div>
+        <div class="rpe-bar-bg">
+          <div class="rpe-bar-fill" id="rpe-bar" style="width:0%"></div>
+        </div>
+        <div class="rpe-label" id="rpe-label">—</div>
+      </div>
+
+      <!-- SESSION TIMER -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Session Time</div>
+        <div class="session-timer" id="session-timer">00:00</div>
+        <div class="stat-row" style="margin-top:10px">
+          <span class="stat-key">Est. remaining</span>
+          <span class="stat-val" id="stat-remaining">—</span>
+        </div>
+      </div>
+
+      <!-- TERMINAL LOG -->
+      <div class="sidebar-section sidebar-section--log">
+        <div class="sidebar-title">Event Log</div>
+        <div class="terminal-log" id="terminal-log" role="log" aria-live="polite"></div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bm-footer">
+    <span>BIO-METRIC OS</span>
+    <span class="footer-sep">·</span>
+    <span>TRAINING INTELLIGENCE SYSTEM</span>
+    <span class="footer-sep">·</span>
+    <span id="footer-version">v3.1.0</span>
+    <span class="footer-sep">·</span>
+    <span id="footer-date"></span>
+  </footer>
+
+  <script src="Iron.js" type="module"></script>
+</body>
+</html>
