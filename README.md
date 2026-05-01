@@ -31,3 +31,6 @@
 ├── app.js           # Core Intelligence Engine (Verbatim: Iron_5.js)
 ├── Iron.json        # Protocol Database (Required for Boot)
 └── styles.css       # Industrial Design & Sovereign UI
+
+👨‍💻 Developer
+Built by a Freelance Web Developer specializing in high-performance web applications and industrial UI/UX design. Available for custom development projects and "Sovereign" digital architecture on Fiverr.
